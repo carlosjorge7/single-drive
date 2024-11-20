@@ -1,0 +1,27 @@
+<div class="p-grid p-justify-center p-align-center welcome-page">
+  <div class="p-col-12 p-md-6">
+    <p-card class="welcome-card">
+      <ng-template pTemplate="header">
+        <img src="logo.png" alt="Nube privada" class="welcome-image" />
+      </ng-template>
+      <ng-template pTemplate="content">
+        <h1 class="welcome-title">¡Bienvenido a tu nube privada!</h1>
+        <p>
+          Disfruta de la comodidad de administrar tus archivos y recursos desde
+          cualquier lugar.
+        </p>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="p-d-flex p-jc-center">
+          <button
+            pButton
+            label="Administrar Recursos"
+            icon="pi pi-cog"
+            class="p-button-primary"
+            (click)="navigateToAdmin()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>
