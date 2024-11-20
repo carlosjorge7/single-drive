@@ -75,17 +75,29 @@
   <ng-template pTemplate>
     <div class="col flex align-items-center justify-content-center">
       @if (selectedPath() === 'archivos') {
-      <app-archivos />
+      <ng-container>
+        <app-archivos />
+      </ng-container>
       } @if (selectedPath() === 'fotos') {
-      <app-fotos />
+      <ng-container>
+        <app-fotos />
+      </ng-container>
       } @if (selectedPath() === 'pelis') {
-      <app-pelis />
+      <ng-container>
+        <app-pelis />
+      </ng-container>
       } @if (selectedPath() === 'planes') {
-      <app-planes />
+      <ng-container>
+        <app-planes />
+      </ng-container>
       } @if (selectedPath() === 'recetas') {
-      <app-recetas />
+      <ng-container>
+        <app-recetas />
+      </ng-container>
       } @if (selectedPath() === 'videos') {
-      <app-videos />
+      <ng-container>
+        <app-videos />
+      </ng-container>
       }
     </div>
   </ng-template>
