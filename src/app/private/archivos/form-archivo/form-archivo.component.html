@@ -1,36 +1,62 @@
-<p-card header="Crear Archivo" class="mb-4">
-  <form [formGroup]="archivoForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="archivoForm" (ngSubmit)="onSubmit()" class="form-layout">
+  <div class="p-fluid">
+    <!-- Campo Nombre -->
     <div class="p-field">
       <label for="name">Nombre</label>
-      <input id="name" type="text" pInputText formControlName="name" />
+      <input
+        placeholder="Introduce el nombre"
+        id="name"
+        type="text"
+        pInputText
+        formControlName="name"
+      />
+      @if (archivoForm.get('name')?.invalid && archivoForm.get('name')?.touched)
+      {
+      <small class="p-error">El nombre es obligatorio.</small>
+      }
     </div>
 
+    <!-- Campo Descripción -->
     <div class="p-field">
       <label for="description">Descripción</label>
       <textarea
+        placeholder="Escribe una descripción"
         id="description"
         rows="3"
         pInputTextarea
         formControlName="description"
       ></textarea>
+      @if (archivoForm.get('description')?.invalid &&
+      archivoForm.get('description')?.touched) {
+      <small class="p-error">La descripción es obligatoria.</small>
+      }
     </div>
 
+    <!-- Campo Archivo -->
     <div class="p-field">
       <label for="file">Archivo</label>
       <input
         id="file"
         type="file"
+        class="file-input"
         (change)="onFileSelected($event)"
         accept="*"
       />
+      @if (archivoForm.get('file')?.invalid && archivoForm.get('file')?.touched)
+      {
+      <small class="p-error">Selecciona un archivo.</small>
+      }
     </div>
 
-    <button
-      pButton
-      label="Crear Archivo"
-      type="submit"
-      class="p-button-primary"
-      [disabled]="archivoForm.invalid"
-    ></button>
-  </form>
-</p-card>
+    <!-- Botón Enviar -->
+    <div class="p-field">
+      <button
+        pButton
+        label="Crear Archivo"
+        type="submit"
+        class="p-button-primary p-button-lg"
+        [disabled]="archivoForm.invalid"
+      ></button>
+    </div>
+  </div>
+</form>

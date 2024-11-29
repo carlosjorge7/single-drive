@@ -12,11 +12,6 @@ export const routes: Routes = [
           import('./archivos/archivos.routes').then((m) => m.routes),
       },
       {
-        path: 'fotos',
-        loadChildren: () =>
-          import('./fotos/fotos.routes').then((m) => m.routes),
-      },
-      {
         path: 'pelis',
         loadChildren: () =>
           import('./pelis/pelis.routes').then((m) => m.routes),
@@ -30,11 +25,6 @@ export const routes: Routes = [
         path: 'recetas',
         loadChildren: () =>
           import('./recetas/recetas.routes').then((m) => m.routes),
-      },
-      {
-        path: 'videos',
-        loadChildren: () =>
-          import('./videos/videos.routes').then((m) => m.routes),
       },
       {
         path: '',

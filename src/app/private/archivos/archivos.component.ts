@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Archivo } from './models/Archivo';
 import { ArchivoService } from './services/archivo.service';
-
 import { first } from 'rxjs';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -29,7 +28,7 @@ export class ArchivosComponent implements OnInit {
   errorMessage: string | null = null;
   displayCreateDialog = false;
 
-  private archivoSvr = inject(ArchivoService);
+  private readonly archivoSvr = inject(ArchivoService);
 
   ngOnInit(): void {
     this.getArchivos();
@@ -50,11 +49,11 @@ export class ArchivosComponent implements OnInit {
       });
   }
 
-  viewFile(archivo: Archivo): void {
+  public viewFile(archivo: Archivo): void {
     window.open(archivo.file as string, '_blank');
   }
 
-  deleteFile(id: number): void {
+  public deleteFile(id: number): void {
     if (confirm('¿Estás seguro de que deseas eliminar este archivo?')) {
       this.archivoSvr.delete(id).subscribe({
         next: () => {
@@ -69,11 +68,11 @@ export class ArchivosComponent implements OnInit {
     }
   }
 
-  handleArchivoCreated(archivo: FormData): void {
+  public handleArchivoCreated(archivo: FormData): void {
     this.archivoSvr.create(archivo).subscribe({
       next: (archivo) => {
-        this.archivos.push(archivo); // Añade el nuevo archivo a la lista
-        this.displayCreateDialog = false; // Cierra el modal
+        this.archivos.push(archivo);
+        this.displayCreateDialog = false;
       },
       error: (error) => {
         this.errorMessage = 'Error creando el archivo';
@@ -82,7 +81,7 @@ export class ArchivosComponent implements OnInit {
     });
   }
 
-  openCreateDialog(): void {
+  public openCreateDialog(): void {
     this.displayCreateDialog = true;
   }
 }

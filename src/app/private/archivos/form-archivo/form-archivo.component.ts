@@ -5,23 +5,25 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CardModule } from 'primeng/card';
-import { Archivo } from '../models/Archivo';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-form-archivo',
   standalone: true,
-  imports: [CardModule, ButtonModule, ReactiveFormsModule],
+  imports: [ButtonModule, ReactiveFormsModule],
   templateUrl: './form-archivo.component.html',
   styleUrl: './form-archivo.component.scss',
 })
 export class FormArchivoComponent {
   @Output() onEmitFile = new EventEmitter<FormData>();
-  archivoForm: FormGroup;
+  archivoForm!: FormGroup;
   selectedFile: File | null = null;
 
   constructor(private fb: FormBuilder) {
+    this.initForm();
+  }
+
+  private initForm(): void {
     this.archivoForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -29,8 +31,7 @@ export class FormArchivoComponent {
     });
   }
 
-  onFileSelected(event: Event): void {
-    console.log(event);
+  public onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {
       this.selectedFile = input.files[0];
@@ -39,9 +40,8 @@ export class FormArchivoComponent {
     }
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (this.archivoForm.valid && this.selectedFile) {
-      // Crear un objeto FormData para manejar archivos
       const formData = new FormData();
       formData.append('name', this.archivoForm.get('name')?.value);
       formData.append(
@@ -49,11 +49,7 @@ export class FormArchivoComponent {
         this.archivoForm.get('description')?.value
       );
       formData.append('file', this.selectedFile);
-
-      // Emitir el FormData
       this.onEmitFile.emit(formData);
-
-      // Resetear formulario y archivo seleccionado
       this.archivoForm.reset();
       this.selectedFile = null;
     }

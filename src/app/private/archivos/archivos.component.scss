@@ -1,9 +1,6 @@
-:host ::ng-deep .p-datatable .p-datatable-gridlines td,
-:host ::ng-deep .p-datatable .p-datatable-gridlines th {
-  text-align: center;
-  vertical-align: middle;
-}
-
-:host ::ng-deep .p-datatable .p-button-text {
-  margin: 0.2rem;
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: 10px;
 }

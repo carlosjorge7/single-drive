@@ -1,23 +1,28 @@
-<p-card header="Lista de Archivos" styleClass="p-mb-4">
-  <p-table
-    [value]="archivos"
-    [paginator]="true"
-    [rows]="5"
-    [rowsPerPageOptions]="[5, 10, 20]"
-    [responsiveLayout]="'scroll'"
-    styleClass="p-datatable-gridlines"
-    emptyMessage="No se encontraron archivos"
-  >
+<div class="card">
+  <div class="toolbar">
+    <button
+      pButton
+      label="Crear Archivo"
+      icon="pi pi-plus"
+      class="p-button-primary"
+      (click)="openCreateDialog()"
+    ></button>
+  </div>
+
+  <p-table [value]="archivos" [tableStyle]="{ 'min-width': '70rem' }">
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Fecha de Creación</th>
+        <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+        <th pSortableColumn="name">Nombre <p-sortIcon field="name" /></th>
+        <th pSortableColumn="description">
+          Descripción <p-sortIcon field="description" />
+        </th>
+        <th pSortableColumn="created_at">
+          Fecha de Creación <p-sortIcon field="created_at" />
+        </th>
         <th>Acciones</th>
       </tr>
     </ng-template>
-
     <ng-template pTemplate="body" let-archivo>
       <tr>
         <td>{{ archivo.id }}</td>
@@ -42,24 +47,8 @@
         </td>
       </tr>
     </ng-template>
-
-    <ng-template pTemplate="footer">
-      <tr>
-        <td colspan="5" class="p-text-center">
-          Total de archivos: {{ archivos.length }}
-        </td>
-      </tr>
-    </ng-template>
   </p-table>
-
-  <button
-    pButton
-    label="Crear Archivo"
-    icon="pi pi-plus"
-    class="p-button-success p-mt-3"
-    (click)="openCreateDialog()"
-  ></button>
-</p-card>
+</div>
 
 <p-dialog
   [(visible)]="displayCreateDialog"

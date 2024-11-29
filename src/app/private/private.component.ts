@@ -1,9 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SplitterModule } from 'primeng/splitter';
-import { FotosComponent } from './fotos/fotos.component';
-import { VideosComponent } from './videos/videos.component';
 import { RecetasComponent } from './recetas/recetas.component';
 import { PelisComponent } from './pelis/pelis.component';
 import { PlanesComponent } from './planes/planes.component';
@@ -17,8 +15,6 @@ import { NgClass } from '@angular/common';
     SplitterModule,
     ButtonModule,
     RouterLink,
-    FotosComponent,
-    VideosComponent,
     RecetasComponent,
     PelisComponent,
     PlanesComponent,
