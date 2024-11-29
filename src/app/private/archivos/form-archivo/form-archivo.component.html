@@ -1,0 +1,36 @@
+<p-card header="Crear Archivo" class="mb-4">
+  <form [formGroup]="archivoForm" (ngSubmit)="onSubmit()">
+    <div class="p-field">
+      <label for="name">Nombre</label>
+      <input id="name" type="text" pInputText formControlName="name" />
+    </div>
+
+    <div class="p-field">
+      <label for="description">Descripción</label>
+      <textarea
+        id="description"
+        rows="3"
+        pInputTextarea
+        formControlName="description"
+      ></textarea>
+    </div>
+
+    <div class="p-field">
+      <label for="file">Archivo</label>
+      <input
+        id="file"
+        type="file"
+        (change)="onFileSelected($event)"
+        accept="*"
+      />
+    </div>
+
+    <button
+      pButton
+      label="Crear Archivo"
+      type="submit"
+      class="p-button-primary"
+      [disabled]="archivoForm.invalid"
+    ></button>
+  </form>
+</p-card>

@@ -1,1 +1,74 @@
-<p>archivos works!</p>
+<p-card header="Lista de Archivos" styleClass="p-mb-4">
+  <p-table
+    [value]="archivos"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [responsiveLayout]="'scroll'"
+    styleClass="p-datatable-gridlines"
+    emptyMessage="No se encontraron archivos"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Fecha de Creación</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-archivo>
+      <tr>
+        <td>{{ archivo.id }}</td>
+        <td>{{ archivo.name }}</td>
+        <td>{{ archivo.description }}</td>
+        <td>{{ archivo.created_at | date : "short" }}</td>
+        <td>
+          <button
+            pButton
+            label="Ver"
+            icon="pi pi-eye"
+            class="p-button-text p-button-info p-mr-2"
+            (click)="viewFile(archivo)"
+          ></button>
+          <button
+            pButton
+            label="Eliminar"
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger"
+            (click)="deleteFile(archivo.id)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <tr>
+        <td colspan="5" class="p-text-center">
+          Total de archivos: {{ archivos.length }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <button
+    pButton
+    label="Crear Archivo"
+    icon="pi pi-plus"
+    class="p-button-success p-mt-3"
+    (click)="openCreateDialog()"
+  ></button>
+</p-card>
+
+<p-dialog
+  [(visible)]="displayCreateDialog"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '500px' }"
+  header="Crear Archivo"
+>
+  <app-form-archivo
+    (onEmitFile)="handleArchivoCreated($event)"
+  ></app-form-archivo>
+</p-dialog>
