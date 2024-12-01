@@ -1,5 +1,10 @@
 <div class="card">
   <div class="toolbar">
+    <p-dropdown
+      [options]="tiposFichero"
+      placeholder="Selecciona tipo de fichero"
+      (onChange)="onChangeTipoFichero($event)"
+    />
     <button
       pButton
       label="Crear Archivo"
@@ -9,7 +14,7 @@
     ></button>
   </div>
 
-  <p-table [value]="archivos" [tableStyle]="{ 'min-width': '70rem' }">
+  <p-table [value]="filteredArchivos" [tableStyle]="{ 'min-width': '70rem' }">
     <ng-template pTemplate="header">
       <tr>
         <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>

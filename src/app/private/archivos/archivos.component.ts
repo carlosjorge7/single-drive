@@ -8,6 +8,7 @@ import { TableModule } from 'primeng/table';
 import { FormArchivoComponent } from './form-archivo/form-archivo.component';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-archivos',
@@ -18,6 +19,7 @@ import { CommonModule } from '@angular/common';
     DialogModule,
     CardModule,
     FormArchivoComponent,
+    DropdownModule,
     CommonModule,
   ],
   templateUrl: './archivos.component.html',
@@ -25,8 +27,12 @@ import { CommonModule } from '@angular/common';
 })
 export class ArchivosComponent implements OnInit {
   archivos: Archivo[] = [];
+  filteredArchivos: Archivo[] = [];
   errorMessage: string | null = null;
   displayCreateDialog = false;
+
+  tiposFichero: string[] = ['PDF', 'Imagen', 'Video', 'Excel', 'Todos'];
+  selectTypeFile: string = '';
 
   private readonly archivoSvr = inject(ArchivoService);
 
@@ -41,6 +47,7 @@ export class ArchivosComponent implements OnInit {
       .subscribe({
         next: (items) => {
           this.archivos = items;
+          this.filteredArchivos = [...this.archivos];
         },
         error: (error) => {
           this.errorMessage = 'Error fetching media items';
@@ -58,6 +65,9 @@ export class ArchivosComponent implements OnInit {
       this.archivoSvr.delete(id).subscribe({
         next: () => {
           this.archivos = this.archivos.filter((archivo) => archivo.id !== id);
+          this.filteredArchivos = this.filteredArchivos.filter(
+            (archivo) => archivo.id !== id
+          );
           alert('Archivo eliminado con éxito');
         },
         error: (err) => {
@@ -72,6 +82,7 @@ export class ArchivosComponent implements OnInit {
     this.archivoSvr.create(archivo).subscribe({
       next: (archivo) => {
         this.archivos.push(archivo);
+        this.filteredArchivos.push(archivo); // Actualizamos también el array filtrado
         this.displayCreateDialog = false;
       },
       error: (error) => {
@@ -83,5 +94,35 @@ export class ArchivosComponent implements OnInit {
 
   public openCreateDialog(): void {
     this.displayCreateDialog = true;
+  }
+
+  public onChangeTipoFichero(event: DropdownChangeEvent): void {
+    const tipo: string = event.value;
+
+    if (tipo === 'Todos') {
+      this.filteredArchivos = [...this.archivos];
+    } else {
+      this.filteredArchivos = this.archivos.filter((archivo) => {
+        const fileExtension = (archivo.file as string)
+          .split('.')
+          .pop()
+          ?.toLowerCase();
+
+        switch (tipo) {
+          case 'PDF':
+            return fileExtension === 'pdf';
+          case 'Imagen':
+            return ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(
+              fileExtension || ''
+            );
+          case 'Video':
+            return ['mp4', 'avi', 'mkv', 'mov'].includes(fileExtension || '');
+          case 'Excel':
+            return ['xls', 'xlsx'].includes(fileExtension || '');
+          default:
+            return true;
+        }
+      });
+    }
   }
 }
