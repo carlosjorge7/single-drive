@@ -1,1 +1,81 @@
-<p>pelis works!</p>
+<div class="p-p-3">
+  <h1 class="p-text-center p-mb-4">🎬 Películas</h1>
+
+  <!-- Botón para abrir modal -->
+  <div class="p-text-center p-mb-4">
+    <button
+      pButton
+      type="button"
+      label="Agregar Nueva Película"
+      icon="pi pi-plus"
+      class="p-button-rounded p-button-success"
+      (click)="showModal()"
+    ></button>
+  </div>
+
+  <!-- Modal del formulario -->
+  <p-dialog
+    [(visible)]="displayModal"
+    header="Agregar Nueva Película"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    [closable]="true"
+    [resizable]="false"
+    [draggable]="false"
+  >
+    <form [formGroup]="peliForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="title">Título</label>
+          <input
+            id="title"
+            pInputText
+            formControlName="title"
+            placeholder="Título de la película"
+          />
+        </div>
+
+        <div class="p-field">
+          <label for="description">Descripción</label>
+          <textarea
+            id="description"
+            pInputTextarea
+            formControlName="description"
+            placeholder="Descripción de la película"
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="p-d-flex p-jc-center p-mt-4">
+        <button
+          pButton
+          type="submit"
+          label="Guardar"
+          icon="pi pi-check"
+          [disabled]="peliForm.invalid"
+          class="p-button-rounded p-button-primary p-mr-2"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Cancelar"
+          icon="pi pi-times"
+          class="p-button-rounded p-button-secondary"
+          (click)="hideModal()"
+        ></button>
+      </div>
+    </form>
+  </p-dialog>
+
+  <!-- Lista de películas -->
+  <div class="p-grid p-justify-center">
+    @for (peli of pelis; track $index) {
+    <div class="p-col-12 p-md-4 p-lg-3">
+      <p-card [header]="peli.title" [style]="{ 'text-align': 'center' }">
+        <p>{{ peli.description }}</p>
+      </p-card>
+    </div>
+    }
+  </div>
+</div>
