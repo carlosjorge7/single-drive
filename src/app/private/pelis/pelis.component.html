@@ -69,13 +69,11 @@
   </p-dialog>
 
   <!-- Lista de películas -->
-  <div class="p-grid p-justify-center">
-    @for (peli of pelis; track $index) {
-    <div class="p-col-12 p-md-4 p-lg-3">
-      <p-card [header]="peli.title" [style]="{ 'text-align': 'center' }">
-        <p>{{ peli.description }}</p>
-      </p-card>
-    </div>
-    }
-  </div>
+
+  @for (peli of pelis; track $index) {
+  <p style="color: black">
+    Titulo: {{ peli.title }} - Descripcion: {{ peli.description }}
+  </p>
+
+  }
 </div>
