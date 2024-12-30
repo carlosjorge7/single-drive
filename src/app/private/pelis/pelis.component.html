@@ -1,19 +1,15 @@
 <div class="p-p-3">
   <h1 class="p-text-center p-mb-4">🎬 Películas</h1>
 
-  <!-- Botón para abrir modal -->
-  <div class="p-text-center p-mb-4">
-    <button
-      pButton
-      type="button"
-      label="Agregar Nueva Película"
-      icon="pi pi-plus"
-      class="p-button-rounded p-button-success"
-      (click)="showModal()"
-    ></button>
-  </div>
+  <button
+    pButton
+    type="button"
+    label="Agregar Nueva Película"
+    icon="pi pi-plus"
+    class="p-button-rounded p-button-primary"
+    (click)="showModal()"
+  ></button>
 
-  <!-- Modal del formulario -->
   <p-dialog
     [(visible)]="displayModal"
     header="Agregar Nueva Película"
@@ -69,10 +65,15 @@
   </p-dialog>
 
   <!-- Lista de películas -->
-
   @for (peli of pelis; track $index) {
   <p style="color: black">
     Titulo: {{ peli.title }} - Descripcion: {{ peli.description }}
+    <button
+      pButton
+      label="Eliminar"
+      icon="pi pi-trash"
+      class="p-button-text p-button-danger"
+    ></button>
   </p>
 
   }
