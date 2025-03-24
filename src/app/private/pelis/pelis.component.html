@@ -66,15 +66,13 @@
 
   <!-- Lista de películas -->
   @for (peli of pelis; track $index) {
-  <p style="color: black">
-    Titulo: {{ peli.title }} - Descripcion: {{ peli.description }}
-    <button
-      pButton
-      label="Eliminar"
-      icon="pi pi-trash"
-      class="p-button-text p-button-danger"
-    ></button>
-  </p>
-
+  <p style="color: black">Titulo: {{ peli.title }}</p>
+  <p>Descripcion: {{ peli.descripcion }}</p>
+  <button
+    (click)="deleteFilm(peli.id)"
+    pButton
+    label="Eliminar"
+    class="p-button-text p-button-danger"
+  ></button>
   }
 </div>

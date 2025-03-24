@@ -36,9 +36,12 @@ export class PelisComponent implements OnInit {
   }
 
   loadPelis(): void {
-    this.pelisService.getAll().subscribe((data) => {
-      this.pelis = data;
-    });
+    this.pelisService
+      .getAll()
+      .pipe(first())
+      .subscribe((data) => {
+        this.pelis = data;
+      });
   }
 
   onSubmit(): void {
@@ -58,5 +61,12 @@ export class PelisComponent implements OnInit {
 
   hideModal(): void {
     this.displayModal = false;
+  }
+
+  deleteFilm(id: string): void {
+    this.pelisService
+      .delete(id)
+      .pipe(first())
+      .subscribe(() => this.loadPelis());
   }
 }
