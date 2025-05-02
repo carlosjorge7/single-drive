@@ -1,3 +1,3 @@
 export const enviroment = {
-  host: 'http://127.0.0.1:8000',
+  host: 'http://192.168.1.133:8003',
 };
