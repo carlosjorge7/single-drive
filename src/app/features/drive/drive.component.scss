@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.drive-shell {
+  display: flex;
+  height: 100vh;
+  background: var(--hd-bg);
+  color: var(--hd-text);
+
+  &.sidebar-collapsed app-drive-sidebar {
+    width: 0;
+    overflow: hidden;
+  }
+}
+
+.drive-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.drive-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: var(--hd-border);
+    border-radius: 3px;
+  }
+}

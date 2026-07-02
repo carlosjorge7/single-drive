@@ -1,0 +1,204 @@
+<p-toast position="bottom-right" />
+<p-confirmDialog />
+<app-drag-drop-overlay (filesDropped)="onFilesDropped($event)" />
+
+<app-file-preview
+  [file]="previewFile"
+  [(visible)]="previewVisible"
+/>
+
+<app-lightbox
+  [files]="imageFiles()"
+  [(visible)]="lightboxVisible"
+  [(activeId)]="lightboxActiveId"
+/>
+
+<!-- Hidden file input -->
+<input
+  id="file-input"
+  type="file"
+  multiple
+  hidden
+  (change)="onFilesSelected($event)"
+/>
+
+<div class="explorer">
+  <!-- Toolbar -->
+  <div class="explorer-toolbar">
+    <div class="toolbar-left">
+      <span class="p-inputgroup search-group">
+        <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+        <input
+          pInputText
+          placeholder="Buscar archivos…"
+          [ngModel]="searchQuery"
+          (ngModelChange)="onSearch($event)"
+          class="search-input"
+        />
+      </span>
+    </div>
+
+    <div class="toolbar-right">
+      <p-dropdown
+        [options]="sortOptions"
+        [(ngModel)]="sortValue"
+        (ngModelChange)="onSortChange()"
+        styleClass="sort-dropdown"
+        [style]="{'min-width': '160px'}"
+      />
+
+      <div class="view-toggle">
+        <button
+          pButton type="button" icon="pi pi-th-large"
+          class="p-button-text view-btn"
+          [class.active]="viewMode() === 'grid'"
+          pTooltip="Vista cuadrícula"
+          (click)="viewMode.set('grid')"
+        ></button>
+        <button
+          pButton type="button" icon="pi pi-list"
+          class="p-button-text view-btn"
+          [class.active]="viewMode() === 'list'"
+          pTooltip="Vista lista"
+          (click)="viewMode.set('list')"
+        ></button>
+      </div>
+
+      <button
+        pButton type="button"
+        label="Subir"
+        icon="pi pi-upload"
+        class="upload-btn"
+        (click)="openFileInput()"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Grid view -->
+  @if (viewMode() === 'grid') {
+    @if (fileService.loading() && !fileService.files().length) {
+      <!-- Initial skeleton loading -->
+      <div class="file-grid file-grid-skeleton">
+        @for (s of skeletonItems; track $index) {
+          <div class="skeleton-card">
+            <p-skeleton height="140px" borderRadius="0.625rem 0.625rem 0 0" />
+            <div style="padding: 0.625rem 0.75rem 0.75rem">
+              <p-skeleton height="12px" width="80%" class="mb-1" />
+              <p-skeleton height="10px" width="50%" />
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (!fileService.files().length && !fileService.loading()) {
+      <!-- Empty state -->
+      <div class="empty-state-wrap">
+        <div class="empty-state">
+          <i class="pi pi-folder-open"></i>
+          <h3>Esta carpeta está vacía</h3>
+          <p>Arrastra archivos aquí o pulsa <strong>Subir</strong> para empezar.</p>
+          <button pButton label="Subir archivos" icon="pi pi-upload" (click)="openFileInput()"></button>
+        </div>
+      </div>
+    } @else {
+      <!-- CDK Virtual Scroll viewport -->
+      <cdk-virtual-scroll-viewport
+        itemSize="220"
+        class="file-grid-viewport"
+        (scrolledIndexChange)="onVirtualScrolled($event)"
+      >
+        <div class="virtual-row" *cdkVirtualFor="let row of fileRows()">
+          @for (file of row; track file.id) {
+            <app-file-card
+              [file]="file"
+              (preview)="onPreview($event)"
+              (download)="onDownload($event)"
+              (trash)="onTrash($event)"
+              (rename)="openRename($event)"
+            />
+          }
+        </div>
+      </cdk-virtual-scroll-viewport>
+      @if (fileService.loading()) {
+        <div class="load-more-indicator">
+          <i class="pi pi-spin pi-spinner"></i>
+        </div>
+      }
+    }
+  }
+
+  <!-- List view -->
+  @if (viewMode() === 'list') {
+    <div class="file-list" (scroll)="onScroll($event)">
+      @if (fileService.loading() && !fileService.files().length) {
+        @for (s of skeletonItems; track $index) {
+          <div class="list-skeleton">
+            <p-skeleton shape="circle" size="2.5rem" />
+            <p-skeleton height="14px" width="60%" />
+            <p-skeleton height="12px" width="80px" />
+            <p-skeleton height="12px" width="100px" />
+          </div>
+        }
+      } @else if (!fileService.files().length && !fileService.loading()) {
+        <div class="empty-state">
+          <i class="pi pi-folder-open"></i>
+          <h3>Esta carpeta está vacía</h3>
+          <p>Arrastra archivos aquí o pulsa <strong>Subir</strong> para empezar.</p>
+          <button pButton label="Subir archivos" icon="pi pi-upload" (click)="openFileInput()"></button>
+        </div>
+      } @else {
+        <div class="list-header">
+          <span>Nombre</span>
+          <span>Tamaño</span>
+          <span>Fecha</span>
+          <span></span>
+        </div>
+        @for (file of fileService.files(); track file.id) {
+          <div class="list-row" (click)="onPreview(file)">
+            <div class="list-name">
+              @if (file.thumbnail_small_url) {
+                <img [src]="file.thumbnail_small_url" [alt]="file.name" class="list-thumb" />
+              } @else {
+                @let ic = file.mime_type | fileTypeIcon: file.file_type;
+                <div class="list-icon" [style.color]="ic.color">
+                  <i class="pi {{ ic.icon }}"></i>
+                </div>
+              }
+              <span class="list-filename" [title]="file.name">{{ file.name }}</span>
+              @if (file.processing_status === 'processing' || file.processing_status === 'pending') {
+                <i class="pi pi-spin pi-spinner list-processing"></i>
+              }
+            </div>
+            <span class="list-size">{{ file.size | fileSize }}</span>
+            <span class="list-date">{{ file.created_at | date:'dd/MM/yy' }}</span>
+            <div class="list-actions" (click)="$event.stopPropagation()">
+              <button pButton type="button" icon="pi pi-download" class="p-button-text p-button-sm action-icon" (click)="onDownload(file)"></button>
+              <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm action-icon" (click)="openRename(file)"></button>
+              <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm action-icon danger" (click)="onTrash(file)"></button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  }
+</div>
+
+<!-- Rename dialog -->
+<p-dialog
+  header="Renombrar archivo"
+  [(visible)]="renameDialogVisible"
+  [modal]="true"
+  [style]="{width: '400px'}"
+  [draggable]="false"
+>
+  <input
+    pInputText
+    [(ngModel)]="renameName"
+    class="w-full"
+    (keyup.enter)="confirmRename()"
+    autofocus
+  />
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancelar" class="p-button-text" (click)="renameDialogVisible = false"></button>
+    <button pButton label="Guardar" icon="pi pi-check" (click)="confirmRename()"></button>
+  </ng-template>
+</p-dialog>

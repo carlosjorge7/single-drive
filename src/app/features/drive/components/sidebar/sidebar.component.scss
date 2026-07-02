@@ -1,0 +1,135 @@
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  height: 100vh;
+  background: var(--hd-surface);
+  border-right: 1px solid var(--hd-border);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.2s ease, min-width 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--hd-border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.625rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    color: #fff;
+    font-size: 1.125rem;
+  }
+}
+
+.brand-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--hd-text);
+  letter-spacing: -0.25px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.nav-section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hd-text-muted);
+  padding: 0 0.5rem 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.625rem;
+  color: var(--hd-text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer;
+
+  i { font-size: 1rem; color: var(--hd-text-muted); transition: color 0.15s; }
+
+  &:hover {
+    background: var(--hd-hover);
+    color: var(--hd-text);
+    i { color: var(--hd-primary); }
+  }
+
+  &.active {
+    background: var(--hd-primary-subtle);
+    color: var(--hd-primary);
+    font-weight: 600;
+    i { color: var(--hd-primary); }
+  }
+}
+
+.sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--hd-border);
+}
+
+.storage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.storage-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--hd-text-secondary);
+
+  i { font-size: 0.875rem; color: var(--hd-text-muted); }
+}
+
+.storage-bar {
+  height: 4px;
+  background: var(--hd-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.storage-used {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 2px;
+}
+
+.storage-text {
+  font-size: 0.75rem;
+  color: var(--hd-text-muted);
+}
