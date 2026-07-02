@@ -23,6 +23,22 @@
 />
 
 <div class="explorer">
+  <!-- Trash banner -->
+  @if (isTrash) {
+    <div class="trash-banner">
+      <i class="pi pi-trash"></i>
+      <span>Los archivos de la papelera se eliminan automáticamente pasados 30 días.</span>
+      <button
+        pButton type="button"
+        label="Vaciar papelera"
+        icon="pi pi-trash"
+        class="p-button-danger p-button-sm"
+        [disabled]="!fileService.files().length"
+        (click)="onEmptyTrash()"
+      ></button>
+    </div>
+  }
+
   <!-- Toolbar -->
   <div class="explorer-toolbar">
     <div class="toolbar-left">
@@ -100,29 +116,31 @@
         </div>
       </div>
     } @else {
-      <!-- CDK Virtual Scroll viewport -->
-      <cdk-virtual-scroll-viewport
-        itemSize="220"
-        class="file-grid-viewport"
-        (scrolledIndexChange)="onVirtualScrolled($event)"
-      >
-        <div class="virtual-row" *cdkVirtualFor="let row of fileRows()">
-          @for (file of row; track file.id) {
-            <app-file-card
-              [file]="file"
-              (preview)="onPreview($event)"
-              (download)="onDownload($event)"
-              (trash)="onTrash($event)"
-              (rename)="openRename($event)"
-            />
+      <div class="file-grid" (scroll)="onScroll($event)">
+        @for (file of fileService.files(); track file.id) {
+          <app-file-card
+            [file]="file"
+            [trashMode]="isTrash"
+            (preview)="onPreview($event)"
+            (download)="onDownload($event)"
+            (trash)="onTrash($event)"
+            (rename)="openRename($event)"
+            (restore)="onRestore($event)"
+            (deletePermanent)="onDeletePermanent($event)"
+          />
+        }
+        @if (fileService.loading()) {
+          @for (s of skeletonItems; track $index) {
+            <div class="skeleton-card">
+              <p-skeleton height="140px" borderRadius="0.625rem 0.625rem 0 0" />
+              <div style="padding:0.625rem 0.75rem 0.75rem">
+                <p-skeleton height="12px" width="80%" class="mb-1" />
+                <p-skeleton height="10px" width="50%" />
+              </div>
+            </div>
           }
-        </div>
-      </cdk-virtual-scroll-viewport>
-      @if (fileService.loading()) {
-        <div class="load-more-indicator">
-          <i class="pi pi-spin pi-spinner"></i>
-        </div>
-      }
+        }
+      </div>
     }
   }
 

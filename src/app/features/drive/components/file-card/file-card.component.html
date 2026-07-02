@@ -20,27 +20,44 @@
     }
 
     <div class="card-overlay">
-      <button
-        pButton type="button"
-        icon="pi pi-download"
-        class="p-button-rounded p-button-text overlay-btn"
-        pTooltip="Descargar"
-        (click)="$event.stopPropagation(); download.emit(file)"
-      ></button>
-      <button
-        pButton type="button"
-        icon="pi pi-pencil"
-        class="p-button-rounded p-button-text overlay-btn"
-        pTooltip="Renombrar"
-        (click)="$event.stopPropagation(); rename.emit(file)"
-      ></button>
-      <button
-        pButton type="button"
-        icon="pi pi-trash"
-        class="p-button-rounded p-button-text overlay-btn danger"
-        pTooltip="Mover a papelera"
-        (click)="$event.stopPropagation(); trash.emit(file)"
-      ></button>
+      @if (trashMode) {
+        <button
+          pButton type="button"
+          icon="pi pi-undo"
+          class="p-button-rounded p-button-text overlay-btn"
+          pTooltip="Restaurar"
+          (click)="$event.stopPropagation(); restore.emit(file)"
+        ></button>
+        <button
+          pButton type="button"
+          icon="pi pi-times"
+          class="p-button-rounded p-button-text overlay-btn danger"
+          pTooltip="Eliminar permanentemente"
+          (click)="$event.stopPropagation(); deletePermanent.emit(file)"
+        ></button>
+      } @else {
+        <button
+          pButton type="button"
+          icon="pi pi-download"
+          class="p-button-rounded p-button-text overlay-btn"
+          pTooltip="Descargar"
+          (click)="$event.stopPropagation(); download.emit(file)"
+        ></button>
+        <button
+          pButton type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-text overlay-btn"
+          pTooltip="Renombrar"
+          (click)="$event.stopPropagation(); rename.emit(file)"
+        ></button>
+        <button
+          pButton type="button"
+          icon="pi pi-trash"
+          class="p-button-rounded p-button-text overlay-btn danger"
+          pTooltip="Mover a papelera"
+          (click)="$event.stopPropagation(); trash.emit(file)"
+        ></button>
+      }
     </div>
   </div>
 

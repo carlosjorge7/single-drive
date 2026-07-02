@@ -73,6 +73,12 @@ export class DriveFileService {
     );
   }
 
+  restore(id: string) {
+    return this.http.post(`${this.api}/files/${id}/restore/`, {}).pipe(
+      tap(() => this.files.update((files) => files.filter((f) => f.id !== id))),
+    );
+  }
+
   trash(id: string) {
     return this.http.post(`${this.api}/files/${id}/trash/`, {}).pipe(
       tap(() => this.files.update((files) => files.filter((f) => f.id !== id))),
@@ -93,6 +99,18 @@ export class DriveFileService {
       total_size: number;
       by_type: Record<string, number>;
     }>(`${this.api}/files/stats/`);
+  }
+
+  deletePermanent(id: string) {
+    return this.http.delete(`${this.api}/files/${id}/delete_permanent/`).pipe(
+      tap(() => this.files.update(files => files.filter(f => f.id !== id))),
+    );
+  }
+
+  emptyTrash() {
+    return this.http.delete(`${this.api}/files/empty_trash/`).pipe(
+      tap(() => this.files.set([])),
+    );
   }
 
   addFile(file: DriveFile) {

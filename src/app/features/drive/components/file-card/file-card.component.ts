@@ -17,10 +17,13 @@ import { FileTypeIconPipe } from '../../../../shared/pipes/file-type-icon.pipe';
 export class FileCardComponent {
   @Input() file!: DriveFile;
   @Input() selected = false;
+  @Input() trashMode = false;
   @Output() preview = new EventEmitter<DriveFile>();
   @Output() download = new EventEmitter<DriveFile>();
   @Output() trash = new EventEmitter<DriveFile>();
   @Output() rename = new EventEmitter<DriveFile>();
+  @Output() restore = new EventEmitter<DriveFile>();
+  @Output() deletePermanent = new EventEmitter<DriveFile>();
 
   get isProcessing(): boolean {
     return this.file.processing_status === 'pending' || this.file.processing_status === 'processing';
