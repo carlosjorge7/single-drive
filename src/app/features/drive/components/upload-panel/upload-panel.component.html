@@ -1,0 +1,79 @@
+@if (uploadService.panelVisible()) {
+  <div class="upload-panel" [class.collapsed]="collapsed">
+    <div class="panel-header">
+      <div class="header-left">
+        @if (activeCount() > 0) {
+          <i class="pi pi-spin pi-spinner" style="color: var(--hd-primary)"></i>
+          <span>Subiendo {{ activeCount() }} archivo{{ activeCount() !== 1 ? 's' : '' }}…</span>
+        } @else {
+          <i class="pi pi-check-circle" style="color: #22c55e"></i>
+          <span>Subida completada</span>
+        }
+      </div>
+      <div class="header-actions">
+        <button
+          pButton type="button"
+          [icon]="collapsed ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+          class="p-button-text p-button-sm action-btn"
+          (click)="collapsed = !collapsed"
+        ></button>
+        <button
+          pButton type="button"
+          icon="pi pi-times"
+          class="p-button-text p-button-sm action-btn"
+          pTooltip="Cerrar"
+          (click)="uploadService.panelVisible.set(false)"
+        ></button>
+      </div>
+    </div>
+
+    @if (!collapsed) {
+      <div class="panel-body">
+        @for (item of uploadService.queue(); track item.id) {
+          <div class="upload-item">
+            <div class="item-info">
+              <i
+                class="pi {{ statusIcon(item) }} item-status-icon"
+                [style.color]="statusColor(item)"
+              ></i>
+              <div class="item-details">
+                <span class="item-name" [title]="item.name">{{ item.name }}</span>
+                <span class="item-meta">
+                  {{ item.file.size | fileSize }}
+                  @if (item.status === 'error') {
+                    · <span style="color:#ef4444">{{ item.error }}</span>
+                  }
+                </span>
+              </div>
+              @if (item.status === 'done' || item.status === 'error') {
+                <button
+                  pButton type="button"
+                  icon="pi pi-times"
+                  class="p-button-text p-button-sm dismiss-btn"
+                  (click)="uploadService.dismiss(item.id)"
+                ></button>
+              }
+            </div>
+            @if (item.status === 'uploading') {
+              <p-progressBar
+                [value]="item.progress"
+                [showValue]="false"
+                styleClass="item-progress"
+              />
+            }
+          </div>
+        }
+
+        @if (hasDone()) {
+          <button
+            pButton type="button"
+            label="Limpiar completados"
+            icon="pi pi-trash"
+            class="p-button-text p-button-sm clear-btn"
+            (click)="uploadService.dismissDone()"
+          ></button>
+        }
+      </div>
+    }
+  </div>
+}

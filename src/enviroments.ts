@@ -1,3 +1,6 @@
+// Desarrollo local — ng serve usa este archivo
 export const enviroment = {
-  host: 'http://192.168.1.133:8003',
+  production: false,
+  host: 'http://localhost:8003',
+  apiUrl: 'http://localhost:8003/api/v1',
 };

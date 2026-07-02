@@ -1,18 +1,27 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
-    path: 'private',
-    loadChildren: () =>
-      import('./private/private.routes').then((m) => m.routes),
+    path: 'login',
+    loadComponent: () =>
+      import('./features/login/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: 'public',
-    loadChildren: () => import('./public/public.routes').then((m) => m.routes),
+    path: 'drive',
+    loadComponent: () =>
+      import('./features/drive/drive.component').then((m) => m.DriveComponent),
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/drive/drive.routes').then((m) => m.driveRoutes),
   },
   {
     path: '',
-    redirectTo: 'public',
+    redirectTo: 'drive',
     pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: 'drive',
   },
 ];

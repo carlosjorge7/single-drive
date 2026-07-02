@@ -1,0 +1,105 @@
+<p-dialog
+  [visible]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="preview-dialog"
+  [style]="{ width: '92vw', height: '92vh', 'max-width': '1400px' }"
+>
+  <ng-template pTemplate="header">
+    <div class="preview-header">
+      <i class="pi pi-file preview-header-icon"></i>
+      <span class="preview-title" [title]="file?.name">{{ file?.name }}</span>
+      @if (file) {
+        <span class="preview-meta">{{ file.size | fileSize }}</span>
+      }
+      <button
+        pButton
+        type="button"
+        icon="pi pi-download"
+        label="Descargar"
+        class="p-button-outlined p-button-sm download-btn"
+        (click)="download()"
+      ></button>
+    </div>
+  </ng-template>
+
+  <div class="preview-body">
+
+    <!-- Loading spinner -->
+    @if (kind === 'loading') {
+      <div class="preview-center">
+        <p-progressSpinner strokeWidth="2" animationDuration=".7s" styleClass="hd-spinner" />
+        <p class="state-label">Cargando archivo…</p>
+      </div>
+    }
+
+    <!-- PDF via blob URL — bypasses X-Frame-Options -->
+    @if (kind === 'pdf' && pdfUrl) {
+      <iframe
+        [src]="pdfUrl"
+        class="preview-iframe"
+        type="application/pdf"
+        title="Vista previa PDF"
+      ></iframe>
+    }
+
+    <!-- Image via blob URL -->
+    @if (kind === 'image' && imageUrl) {
+      <div class="preview-center">
+        <img [src]="imageUrl" class="preview-image" [alt]="file?.name" />
+      </div>
+    }
+
+    <!-- Video — native HTML5, browser handles range requests -->
+    @if (kind === 'video' && mediaUrl) {
+      <div class="preview-center preview-center--dark">
+        <video controls class="preview-video" [src]="mediaUrl" preload="metadata">
+          Tu navegador no soporta vídeo HTML5.
+        </video>
+      </div>
+    }
+
+    <!-- Audio -->
+    @if (kind === 'audio' && mediaUrl) {
+      <div class="preview-center">
+        <div class="audio-card">
+          <i class="pi pi-volume-up audio-icon"></i>
+          <p class="audio-name">{{ file?.name }}</p>
+          <audio controls class="preview-audio" [src]="mediaUrl" preload="metadata">
+            Tu navegador no soporta audio HTML5.
+          </audio>
+        </div>
+      </div>
+    }
+
+    <!-- Text / JSON / XML -->
+    @if (kind === 'text' && textContent !== null) {
+      <div class="preview-text-wrapper">
+        <pre class="preview-text">{{ textContent }}</pre>
+      </div>
+    }
+
+    <!-- No preview available -->
+    @if (kind === 'none') {
+      <div class="preview-center">
+        <div class="no-preview-card">
+          <i class="pi pi-file-o no-preview-icon"></i>
+          <p class="no-preview-title">Sin vista previa</p>
+          <p class="no-preview-sub">Este tipo de archivo no puede mostrarse en el navegador.</p>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-download"
+            label="Descargar archivo"
+            class="p-button-sm"
+            (click)="download()"
+          ></button>
+        </div>
+      </div>
+    }
+
+  </div>
+</p-dialog>

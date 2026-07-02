@@ -1,0 +1,121 @@
+<div class="dashboard">
+
+  <!-- Welcome -->
+  <div class="welcome">
+    <div>
+      <h1 class="welcome-title">{{ greeting }}, <span class="accent">{{ username }}</span></h1>
+      <p class="welcome-sub">Tu espacio personal en HomeDrive</p>
+    </div>
+    <a pButton label="Subir archivos" icon="pi pi-upload" routerLink="/drive/files" class="upload-btn"></a>
+  </div>
+
+  <!-- Stats -->
+  @if (stats()) {
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="--c: #6366f1">
+          <i class="pi pi-database"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ stats()!.total_size | fileSize }}</div>
+          <div class="stat-label">Almacenamiento</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="--c: #10b981">
+          <i class="pi pi-copy"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ stats()!.total_files }}</div>
+          <div class="stat-label">Archivos</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="--c: #818cf8">
+          <i class="pi pi-images"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ stats()!.by_type['image'] ?? 0 }}</div>
+          <div class="stat-label">Fotos</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="--c: #f59e0b">
+          <i class="pi pi-video"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ (stats()!.by_type['video'] ?? 0) + (stats()!.by_type['audio'] ?? 0) }}</div>
+          <div class="stat-label">Audio y Vídeo</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="--c: #3b82f6">
+          <i class="pi pi-file"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ stats()!.by_type['document'] ?? 0 }}</div>
+          <div class="stat-label">Documentos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Storage bar -->
+    <div class="storage-card">
+      <div class="storage-top">
+        <span class="storage-label"><i class="pi pi-server"></i> Almacenamiento usado</span>
+        <span class="storage-pct">{{ stats()!.total_size | fileSize }} · {{ storagePercent }}%</span>
+      </div>
+      <div class="storage-track">
+        <div class="storage-bar" [style.width.%]="storagePercent"></div>
+      </div>
+      <div class="storage-cap">10 GB disponibles</div>
+    </div>
+  }
+
+  <!-- Quick access -->
+  <h2 class="section-title">Acceso rápido</h2>
+  <div class="quick-grid">
+    <a routerLink="/drive/photos" class="quick-card">
+      <i class="pi pi-images" style="color:#818cf8"></i>
+      <span>Fotos</span>
+    </a>
+    <a routerLink="/drive/media" class="quick-card">
+      <i class="pi pi-video" style="color:#f59e0b"></i>
+      <span>Audio y Vídeo</span>
+    </a>
+    <a routerLink="/drive/documents" class="quick-card">
+      <i class="pi pi-file" style="color:#3b82f6"></i>
+      <span>Documentos</span>
+    </a>
+    <a routerLink="/drive/shared" class="quick-card">
+      <i class="pi pi-users" style="color:#10b981"></i>
+      <span>Compartido</span>
+    </a>
+  </div>
+
+  <!-- Recent files -->
+  @if (!loading() && recentFiles().length > 0) {
+    <div class="section-header">
+      <h2 class="section-title">Recientes</h2>
+      <a routerLink="/drive/files" class="see-all">Ver todos →</a>
+    </div>
+    <div class="recent-grid">
+      @for (file of recentFiles(); track file.id) {
+        <a routerLink="/drive/files" class="recent-card">
+          @if (file.thumbnail_small_url) {
+            <div class="recent-thumb" [style.background-image]="'url(' + file.thumbnail_small_url + ')'"></div>
+          } @else {
+            <div class="recent-thumb recent-thumb--icon">
+              <i class="pi {{ (file.mime_type | fileTypeIcon: file.file_type).icon }}"></i>
+            </div>
+          }
+          <div class="recent-info">
+            <span class="recent-name" [title]="file.name">{{ file.name }}</span>
+            <span class="recent-meta">{{ file.size | fileSize }}</span>
+          </div>
+        </a>
+      }
+    </div>
+  }
+
+</div>
