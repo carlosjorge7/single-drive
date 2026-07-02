@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
@@ -16,6 +17,7 @@ import { DriveFileService, DriveFile } from '../../../../core/services/drive-fil
 import { UploadService } from '../../../../core/services/upload.service';
 import { FileCardComponent } from '../../components/file-card/file-card.component';
 import { FilePreviewComponent } from '../../components/file-preview/file-preview.component';
+import { LightboxComponent } from '../../components/lightbox/lightbox.component';
 import { DragDropOverlayComponent } from '../../components/drag-drop-overlay/drag-drop-overlay.component';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import { FileTypeIconPipe } from '../../../../shared/pipes/file-type-icon.pipe';
@@ -23,14 +25,25 @@ import { FileTypeIconPipe } from '../../../../shared/pipes/file-type-icon.pipe';
 type ViewMode = 'grid' | 'list';
 type SortOption = '-created_at' | 'created_at' | 'name' | '-name' | '-size' | 'size';
 
+function chunk<T>(arr: T[], size: number): T[][] {
+  if (size <= 0) return [];
+  const result: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
+}
+
 @Component({
   selector: 'app-files-explorer',
   standalone: true,
   imports: [
     CommonModule, FormsModule,
+    ScrollingModule,
     ButtonModule, InputTextModule, DropdownModule, SkeletonModule,
     ToastModule, ConfirmDialogModule, DialogModule,
-    FileCardComponent, FilePreviewComponent, DragDropOverlayComponent, FileSizePipe, FileTypeIconPipe,
+    FileCardComponent, FilePreviewComponent, LightboxComponent,
+    DragDropOverlayComponent, FileSizePipe, FileTypeIconPipe,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './files-explorer.component.html',
@@ -46,14 +59,24 @@ export class FilesExplorerComponent implements OnInit {
   isShared = false;
   pageTitle = 'Archivos';
 
+  // Preview (non-image files)
   previewFile: DriveFile | null = null;
   previewVisible = false;
+
+  // Lightbox (images)
+  lightboxVisible = false;
+  lightboxActiveId: string | null = null;
 
   renameDialogVisible = false;
   renameTarget: DriveFile | null = null;
   renameName = '';
 
   skeletonItems = Array(12);
+
+  // CDK Virtual scroll
+  columns = signal(4);
+  fileRows = computed(() => chunk(this.fileService.files(), this.columns()));
+  imageFiles = computed(() => this.fileService.files().filter(f => f.file_type === 'image'));
 
   sortOptions = [
     { label: 'Más reciente', value: '-created_at' },
@@ -75,6 +98,7 @@ export class FilesExplorerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.updateColumns();
     this.applyRouteData();
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
       this.applyRouteData();
@@ -143,8 +167,13 @@ export class FilesExplorerComponent implements OnInit {
   }
 
   onPreview(file: DriveFile) {
-    this.previewFile = file;
-    this.previewVisible = true;
+    if (file.file_type === 'image') {
+      this.lightboxActiveId = file.id;
+      this.lightboxVisible = true;
+    } else {
+      this.previewFile = file;
+      this.previewVisible = true;
+    }
   }
 
   onDownload(file: DriveFile) {
@@ -194,12 +223,36 @@ export class FilesExplorerComponent implements OnInit {
     }
   }
 
-  @HostListener('scroll', ['$event'])
+  /** Called by CDK virtual scroll viewport when first visible row index changes. */
+  onVirtualScrolled(firstIndex: number) {
+    const totalRows = this.fileRows().length;
+    if (totalRows > 0 && firstIndex + 6 >= totalRows) {
+      this.loadMore();
+    }
+  }
+
+  /** Infinite scroll for the list view. */
   onScroll(e: Event) {
     const el = e.target as HTMLElement;
     if (el.scrollHeight - el.scrollTop - el.clientHeight < 200) {
       this.loadMore();
     }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateColumns();
+  }
+
+  private updateColumns(): void {
+    if (typeof window === 'undefined') return;
+    const w = window.innerWidth;
+    let cols = 4;
+    if (w < 480) cols = 2;
+    else if (w < 768) cols = 3;
+    else if (w < 1400) cols = 4;
+    else cols = 5;
+    this.columns.set(cols);
   }
 
   private toast(severity: 'success' | 'error', summary: string) {

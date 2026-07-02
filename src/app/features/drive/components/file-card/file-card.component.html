@@ -1,0 +1,51 @@
+<div class="file-card" [class.selected]="selected" (click)="preview.emit(file)">
+  <div class="card-thumbnail">
+    @if (isProcessing) {
+      <div class="processing-state">
+        <i class="pi pi-spin pi-spinner"></i>
+        <span>Procesando…</span>
+      </div>
+    } @else if (hasThumbnail) {
+      <img
+        [src]="file.thumbnail_small_url!"
+        [alt]="file.name"
+        loading="lazy"
+        class="thumb-img"
+      />
+    } @else {
+      <div class="file-icon-wrapper">
+        @let iconInfo = file.mime_type | fileTypeIcon: file.file_type;
+        <i class="pi {{ iconInfo.icon }}" [style.color]="iconInfo.color"></i>
+      </div>
+    }
+
+    <div class="card-overlay">
+      <button
+        pButton type="button"
+        icon="pi pi-download"
+        class="p-button-rounded p-button-text overlay-btn"
+        pTooltip="Descargar"
+        (click)="$event.stopPropagation(); download.emit(file)"
+      ></button>
+      <button
+        pButton type="button"
+        icon="pi pi-pencil"
+        class="p-button-rounded p-button-text overlay-btn"
+        pTooltip="Renombrar"
+        (click)="$event.stopPropagation(); rename.emit(file)"
+      ></button>
+      <button
+        pButton type="button"
+        icon="pi pi-trash"
+        class="p-button-rounded p-button-text overlay-btn danger"
+        pTooltip="Mover a papelera"
+        (click)="$event.stopPropagation(); trash.emit(file)"
+      ></button>
+    </div>
+  </div>
+
+  <div class="card-info">
+    <p class="card-name" [title]="file.name">{{ file.name }}</p>
+    <p class="card-meta">{{ file.size | fileSize }} · {{ formattedDate }}</p>
+  </div>
+</div>

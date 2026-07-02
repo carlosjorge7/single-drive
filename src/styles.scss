@@ -40,20 +40,21 @@
   --hd-transition: 0.15s ease;
 }
 
-/* Light mode (opcional — de momento todo dark) */
-@media (prefers-color-scheme: light) {
-  :root.light {
-    --hd-bg: #f8f9fe;
-    --hd-surface: #ffffff;
-    --hd-surface-raised: #f1f1f8;
-    --hd-surface-card: #ffffff;
-    --hd-border: rgba(0, 0, 0, 0.08);
-    --hd-border-strong: rgba(0, 0, 0, 0.15);
-    --hd-text: #1a1a2e;
-    --hd-text-secondary: rgba(26, 26, 46, 0.7);
-    --hd-text-muted: rgba(26, 26, 46, 0.4);
-    --hd-hover: rgba(0, 0, 0, 0.04);
-  }
+/* Light mode — toggled via ThemeService (adds .light-mode to body) */
+.light-mode {
+  --hd-bg: #f8f9fe;
+  --hd-surface: #ffffff;
+  --hd-surface-raised: #f1f1f8;
+  --hd-surface-card: #ffffff;
+  --hd-border: rgba(0, 0, 0, 0.08);
+  --hd-border-strong: rgba(0, 0, 0, 0.15);
+  --hd-text: #1a1a2e;
+  --hd-text-secondary: rgba(26, 26, 46, 0.7);
+  --hd-text-muted: rgba(26, 26, 46, 0.4);
+  --hd-hover: rgba(0, 0, 0, 0.04);
+
+  background: var(--hd-bg);
+  color: var(--hd-text);
 }
 
 /* Reset & base */

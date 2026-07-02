@@ -3,6 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { enviroment } from '../../../enviroments';
 
+export interface ExifData {
+  date_taken?: string;
+  camera_make?: string;
+  camera_model?: string;
+  gps?: { lat: number; lon: number };
+}
+
 export interface DriveFile {
   id: string;
   name: string;
@@ -18,6 +25,7 @@ export interface DriveFile {
   created_at: string;
   updated_at: string;
   folder: string | null;
+  exif_data?: ExifData | null;
 }
 
 export interface PagedResponse<T> {

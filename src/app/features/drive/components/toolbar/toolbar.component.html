@@ -1,0 +1,44 @@
+<header class="toolbar">
+  <div class="toolbar-left">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-bars"
+      class="p-button-text menu-btn"
+      pTooltip="Alternar menú"
+      tooltipPosition="bottom"
+      (click)="menuToggle.emit()"
+    ></button>
+  </div>
+
+  <div class="toolbar-right">
+    <button
+      pButton
+      type="button"
+      [icon]="themeService.isDark() ? 'pi pi-moon' : 'pi pi-sun'"
+      class="p-button-text theme-toggle-btn"
+      [pTooltip]="themeService.isDark() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+      tooltipPosition="bottom"
+      (click)="themeService.toggle()"
+    ></button>
+    @if (user) {
+      <div class="user-info">
+        <span class="user-name">{{ user.first_name || user.username }}</span>
+        <p-avatar
+          [label]="userInitials"
+          styleClass="user-avatar"
+          size="normal"
+        />
+      </div>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-sign-out"
+        class="p-button-text p-button-secondary logout-btn"
+        pTooltip="Cerrar sesión"
+        tooltipPosition="bottom"
+        (click)="logout.emit()"
+      ></button>
+    }
+  </div>
+</header>

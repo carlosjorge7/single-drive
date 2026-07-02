@@ -1,0 +1,35 @@
+<aside class="sidebar" [class.open]="open">
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="brand-icon"><i class="pi pi-cloud"></i></div>
+      <span class="brand-name">HomeDrive</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    @for (item of navItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <i class="pi {{ item.icon }}"></i>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="storage-info">
+      <div class="storage-label">
+        <i class="pi pi-database"></i>
+        <span>Almacenamiento</span>
+      </div>
+      <div class="storage-bar">
+        <div class="storage-used" style="width: 35%"></div>
+      </div>
+      <span class="storage-text">3.5 GB de 10 GB usados</span>
+    </div>
+  </div>
+</aside>
