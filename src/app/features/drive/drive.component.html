@@ -1,4 +1,4 @@
-<div class="drive-shell" [class.sidebar-collapsed]="!sidebarOpen()">
+<div class="drive-shell" [class.sidebar-collapsed]="!sidebarOpen()" [class.sidebar-open]="sidebarOpen()">
   <app-drive-sidebar
     [open]="sidebarOpen()"
     (toggle)="toggleSidebar()"

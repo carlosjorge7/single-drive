@@ -1,9 +1,11 @@
+<div class="sidebar-backdrop" [class.visible]="open" (click)="toggle.emit()"></div>
 <aside class="sidebar" [class.open]="open">
   <div class="sidebar-header">
     <div class="brand">
       <div class="brand-icon"><i class="pi pi-cloud"></i></div>
       <span class="brand-name">HomeDrive</span>
     </div>
+    <button class="sidebar-close-btn" (click)="toggle.emit()"><i class="pi pi-times"></i></button>
   </div>
 
   <nav class="sidebar-nav">

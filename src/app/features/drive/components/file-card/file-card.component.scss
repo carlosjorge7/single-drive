@@ -147,3 +147,50 @@
   outline: 2px solid var(--primary-color, #6366f1);
   outline-offset: 2px;
 }
+
+// ── Responsive additions ────────────────────────────────────────────────────
+
+// Small-container safety: card must never overflow its grid cell
+.file-card {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+// Desktop: lock thumbnail to a fixed height instead of relying on aspect-ratio
+// alone, so the card stays compact in variable-width grid columns
+.card-thumbnail {
+  height: 140px;
+  aspect-ratio: unset;
+}
+
+// Mobile (<480px)
+@media (max-width: 479px) {
+  .card-thumbnail {
+    height: 110px;
+  }
+
+  .card-name {
+    font-size: 0.78rem;
+  }
+
+  // Touch: keep checkbox always visible and expand hit area to 36x36 px
+  .select-check {
+    opacity: 1;
+    // Shift top/left so the enlarged pseudo-element does not spill outside the card
+    top: 0;
+    left: 0;
+    // Pad the container so the finger can land anywhere in a 36px square
+    padding: 8px;
+  }
+
+  .check-box {
+    position: relative;
+
+    // Invisible hit-area extension to reach 36px minimum touch target
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+    }
+  }
+}

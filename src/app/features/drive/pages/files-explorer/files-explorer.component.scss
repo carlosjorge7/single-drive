@@ -9,6 +9,10 @@
   flex-direction: column;
   height: 100%;
   gap: 1rem;
+
+  @media (max-width: 639px) {
+    padding: 0.75rem;
+  }
 }
 
 /* ---- Trash banner ---- */
@@ -26,6 +30,16 @@
 
   i { color: #f87171; }
   span { flex: 1; }
+
+  @media (max-width: 639px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .p-button {
+      width: 100% !important;
+      justify-content: center;
+    }
+  }
 }
 
 /* ---- New folder button ---- */
@@ -33,6 +47,10 @@
   border-color: var(--hd-border-strong) !important;
   color: var(--hd-text-secondary) !important;
   &:hover { border-color: var(--hd-primary) !important; color: var(--hd-primary) !important; }
+
+  @media (max-width: 639px) {
+    .p-button-label { display: none !important; }
+  }
 }
 
 /* ---- Move dialog ---- */
@@ -84,6 +102,29 @@
   gap: 0.75rem;
   flex-shrink: 0;
   flex-wrap: wrap;
+
+  @media (max-width: 639px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+
+    .toolbar-left {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      order: 1;
+    }
+
+    .toolbar-right {
+      order: 2;
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    ::ng-deep .sort-dropdown {
+      display: none !important;
+    }
+  }
 }
 
 .toolbar-left { flex: 1; min-width: 180px; max-width: 360px; }
@@ -134,13 +175,17 @@
   font-weight: 600 !important;
   box-shadow: 0 2px 8px rgba(99,102,241,0.35);
   &:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.5) !important; }
+
+  @media (max-width: 639px) {
+    .p-button-label { display: none !important; }
+  }
 }
 
 /* ---- Grid ---- */
 .file-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 1rem;
   align-content: start;
   overflow-y: auto;
@@ -150,6 +195,11 @@
 
   &::-webkit-scrollbar { width: 6px; }
   &::-webkit-scrollbar-thumb { background: var(--hd-border-strong); border-radius: 3px; }
+
+  @media (max-width: 479px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
 }
 
 /* Empty state wrapper for grid mode */
@@ -194,6 +244,10 @@
   top: 0;
   background: var(--hd-surface-card);
   z-index: 1;
+
+  @media (max-width: 639px) {
+    grid-template-columns: 1fr 80px 100px;
+  }
 }
 
 .list-row {
@@ -207,6 +261,10 @@
 
   &:last-child { border-bottom: none; }
   &:hover { background: var(--hd-hover); .list-actions { opacity: 1; } }
+
+  @media (max-width: 639px) {
+    grid-template-columns: 1fr 80px 100px;
+  }
 }
 
 .list-name {
@@ -249,6 +307,18 @@
   color: var(--hd-text-muted);
 }
 
+.list-size {
+  @media (max-width: 639px) {
+    display: none;
+  }
+}
+
+.list-date {
+  @media (max-width: 639px) {
+    font-size: 0.75rem;
+  }
+}
+
 .list-actions {
   display: flex;
   align-items: center;
@@ -256,6 +326,10 @@
   opacity: 0;
   transition: opacity 0.15s;
   justify-content: flex-end;
+
+  @media (max-width: 639px) {
+    opacity: 1;
+  }
 }
 
 .action-icon {
@@ -291,4 +365,11 @@
   i { font-size: 3rem; opacity: 0.4; }
   h3 { margin: 0; color: var(--hd-text-secondary); font-weight: 600; }
   p { margin: 0; font-size: 0.875rem; }
+}
+
+/* ---- Responsive dialogs ---- */
+@media (max-width: 639px) {
+  ::ng-deep .p-dialog {
+    max-width: 95vw !important;
+  }
 }

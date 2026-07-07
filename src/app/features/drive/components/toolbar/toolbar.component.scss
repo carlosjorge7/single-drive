@@ -48,3 +48,9 @@
   color: var(--hd-text-muted) !important;
   &:hover { color: #ef4444 !important; background: rgba(239,68,68,0.1) !important; }
 }
+
+@media (max-width: 639px) {
+  .user-name {
+    display: none;
+  }
+}

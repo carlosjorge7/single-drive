@@ -4,6 +4,16 @@
   flex-direction: column;
   gap: 28px;
   max-width: 1280px;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+    gap: 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 12px;
+    gap: 16px;
+  }
 }
 
 /* ── Welcome ─────────────────────────────────────────────────────────────── */
@@ -13,6 +23,12 @@
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
 
 .welcome-title {
@@ -21,6 +37,14 @@
   color: var(--hd-text);
   margin: 0 0 4px;
   letter-spacing: -0.3px;
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
+  }
 }
 
 .accent { color: var(--hd-primary); }
@@ -40,6 +64,13 @@
   flex-shrink: 0;
   text-decoration: none;
   transition: opacity 0.15s;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    text-align: center;
+    padding: 12px 18px !important;
+  }
+
   &:hover { opacity: 0.88; }
 }
 
@@ -48,6 +79,16 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 14px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 .stat-card {
@@ -59,6 +100,12 @@
   align-items: center;
   gap: 14px;
   transition: border-color 0.2s, transform 0.15s;
+
+  @media (max-width: 480px) {
+    padding: 16px;
+    gap: 12px;
+  }
+
   &:hover {
     border-color: rgba(99, 102, 241, 0.3);
     transform: translateY(-1px);
@@ -100,6 +147,10 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  @media (max-width: 480px) {
+    padding: 14px 16px;
+  }
 }
 
 .storage-top {
@@ -173,6 +224,11 @@
 
   @media (max-width: 700px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 8px;
   }
 }
 
@@ -194,6 +250,14 @@
 
   i { font-size: 1.8rem; }
 
+  @media (max-width: 480px) {
+    padding: 16px 12px;
+    gap: 8px;
+    font-size: 0.78rem;
+
+    i { font-size: 1.5rem; }
+  }
+
   &:hover {
     border-color: rgba(99,102,241,0.35);
     background: rgba(99,102,241,0.05);
@@ -206,6 +270,16 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
 }
 
 .recent-card {
@@ -240,6 +314,10 @@
 
 .recent-info {
   padding: 9px 11px;
+
+  @media (max-width: 480px) {
+    padding: 7px 9px;
+  }
 }
 
 .recent-name {
