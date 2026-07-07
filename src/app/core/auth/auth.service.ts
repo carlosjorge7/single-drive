@@ -20,6 +20,28 @@ export class AuthService {
     private router: Router,
   ) {}
 
+  register(username: string, email: string, password: string, passwordConfirm: string) {
+    this.isLoading.set(true);
+    return this.http
+      .post<AuthTokens>(`${this.api}/auth/register/`, {
+        username,
+        email,
+        password,
+        password_confirm: passwordConfirm,
+      })
+      .pipe(
+        tap((res) => {
+          this.tokenService.setTokens(res.access, res.refresh, false);
+          this.currentUser.set(res.user);
+          this.isLoading.set(false);
+        }),
+        catchError((err) => {
+          this.isLoading.set(false);
+          return throwError(() => err);
+        }),
+      );
+  }
+
   login(username: string, password: string, rememberMe = false) {
     this.isLoading.set(true);
     return this.http.post<AuthTokens>(`${this.api}/auth/login/`, { username, password }).pipe(

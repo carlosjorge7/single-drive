@@ -9,7 +9,7 @@
         </div>
       </div>
       <h1 class="app-name">HomeDrive</h1>
-      <p class="app-subtitle">Tu nube personal</p>
+      <p class="app-subtitle">{{ mode() === 'login' ? 'Tu nube personal' : 'Crea tu cuenta' }}</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
@@ -23,57 +23,100 @@
       <div class="field">
         <label for="username">Usuario</label>
         <div class="p-inputgroup">
-          <span class="p-inputgroup-addon">
-            <i class="pi pi-user"></i>
-          </span>
+          <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
           <input
             pInputText
             id="username"
             formControlName="username"
-            placeholder="Tu nombre de usuario"
+            placeholder="Nombre de usuario"
             autocomplete="username"
           />
         </div>
       </div>
 
+      @if (mode() === 'register') {
+        <div class="field">
+          <label for="email">Email <span class="optional">(opcional)</span></label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+            <input
+              pInputText
+              id="email"
+              formControlName="email"
+              placeholder="tu@email.com"
+              autocomplete="email"
+              type="email"
+            />
+          </div>
+        </div>
+      }
+
       <div class="field">
         <label for="password">Contraseña</label>
         <div class="p-inputgroup">
-          <span class="p-inputgroup-addon">
-            <i class="pi pi-lock"></i>
-          </span>
+          <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
           <p-password
             inputId="password"
             formControlName="password"
-            placeholder="Tu contraseña"
-            [feedback]="false"
+            [placeholder]="mode() === 'register' ? 'Mínimo 8 caracteres' : 'Tu contraseña'"
+            [feedback]="mode() === 'register'"
             [toggleMask]="true"
-            autocomplete="current-password"
+            [autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'"
             styleClass="w-full"
           />
         </div>
       </div>
 
-      <div class="remember-row">
-        <p-checkbox
-          inputId="rememberMe"
-          formControlName="rememberMe"
-          [binary]="true"
-          styleClass="hd-checkbox"
-        />
-        <label for="rememberMe" class="remember-label">Recordarme en este dispositivo</label>
-      </div>
+      @if (mode() === 'register') {
+        <div class="field">
+          <label for="passwordConfirm">Confirmar contraseña</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+            <p-password
+              inputId="passwordConfirm"
+              formControlName="passwordConfirm"
+              placeholder="Repite la contraseña"
+              [feedback]="false"
+              [toggleMask]="true"
+              autocomplete="new-password"
+              styleClass="w-full"
+            />
+          </div>
+        </div>
+      }
+
+      @if (mode() === 'login') {
+        <div class="remember-row">
+          <p-checkbox
+            inputId="rememberMe"
+            formControlName="rememberMe"
+            [binary]="true"
+            styleClass="hd-checkbox"
+          />
+          <label for="rememberMe" class="remember-label">Recordarme en este dispositivo</label>
+        </div>
+      }
 
       <button
         pButton
         type="submit"
-        label="Entrar"
-        icon="pi pi-sign-in"
+        [label]="mode() === 'login' ? 'Entrar' : 'Crear cuenta'"
+        [icon]="mode() === 'login' ? 'pi pi-sign-in' : 'pi pi-user-plus'"
         class="login-btn"
         [loading]="loading()"
         [disabled]="form.invalid || loading()"
       ></button>
     </form>
+
+    <div class="mode-switch">
+      @if (mode() === 'login') {
+        <span>¿No tienes cuenta?</span>
+        <button class="switch-btn" type="button" (click)="switchMode('register')">Regístrate</button>
+      } @else {
+        <span>¿Ya tienes cuenta?</span>
+        <button class="switch-btn" type="button" (click)="switchMode('login')">Inicia sesión</button>
+      }
+    </div>
 
     <p class="login-footer">HomeDrive · Red privada</p>
   </div>
