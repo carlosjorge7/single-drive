@@ -18,18 +18,63 @@
         <span>{{ item.label }}</span>
       </a>
     }
+
+    @if (folderService.tree().length) {
+      <div class="nav-section-label" style="margin-top: 0.75rem">Mis carpetas</div>
+      @for (folder of folderService.tree(); track folder.id) {
+        <div class="folder-tree-item" [class.active]="isCurrentFolder(folder.id)">
+          <button
+            class="folder-row"
+            [class.active]="isCurrentFolder(folder.id)"
+            (click)="openFolder(folder)"
+          >
+            <i class="pi pi-folder"></i>
+            <span class="folder-label">{{ folder.name }}</span>
+            @if (folder.children_count > 0) {
+              <button
+                class="expand-btn"
+                (click)="$event.stopPropagation(); toggleFolder(folder.id)"
+              >
+                <i class="pi" [class.pi-angle-down]="isExpanded(folder.id)" [class.pi-angle-right]="!isExpanded(folder.id)"></i>
+              </button>
+            }
+          </button>
+          @if (isExpanded(folder.id) && folder.children?.length) {
+            <div class="folder-children">
+              @for (child of folder.children; track child.id) {
+                <button
+                  class="folder-row child"
+                  [class.active]="isCurrentFolder(child.id)"
+                  (click)="openFolder(child)"
+                >
+                  <i class="pi pi-folder"></i>
+                  <span class="folder-label">{{ child.name }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+    }
   </nav>
 
   <div class="sidebar-footer">
-    <div class="storage-info">
-      <div class="storage-label">
-        <i class="pi pi-database"></i>
-        <span>Almacenamiento</span>
-      </div>
-      <div class="storage-bar">
-        <div class="storage-used" style="width: 35%"></div>
-      </div>
-      <span class="storage-text">3.5 GB de 10 GB usados</span>
+  <div class="storage-info">
+    <div class="storage-label">
+      <i class="pi pi-database"></i>
+      <span>Almacenamiento</span>
     </div>
+    @if (stats()) {
+      <div class="storage-bar">
+        <div class="storage-used" [style.width.%]="usagePercent()"></div>
+      </div>
+      <span class="storage-text">{{ stats()!.total_size | fileSize }} de {{ stats()!.quota_bytes | fileSize }} usados</span>
+    } @else {
+      <div class="storage-bar">
+        <div class="storage-used" style="width: 0%"></div>
+      </div>
+      <span class="storage-text">Calculando…</span>
+    }
+  </div>
   </div>
 </aside>

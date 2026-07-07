@@ -23,6 +23,12 @@
 />
 
 <div class="explorer">
+  <app-bulk-actions-bar
+    (bulkTrash)="onBulkTrash($event)"
+    (bulkMove)="onBulkMove($event)"
+    (bulkDownload)="onBulkDownload($event)"
+  />
+
   <!-- Trash banner -->
   @if (isTrash) {
     <div class="trash-banner">
@@ -37,6 +43,11 @@
         (click)="onEmptyTrash()"
       ></button>
     </div>
+  }
+
+  <!-- Breadcrumb (folder mode only) -->
+  @if (isFolderMode && breadcrumb.length) {
+    <app-breadcrumb [items]="breadcrumb" (navigate)="onBreadcrumbNavigate($event)" />
   }
 
   <!-- Toolbar -->
@@ -55,13 +66,15 @@
     </div>
 
     <div class="toolbar-right">
-      <p-dropdown
-        [options]="sortOptions"
-        [(ngModel)]="sortValue"
-        (ngModelChange)="onSortChange()"
-        styleClass="sort-dropdown"
-        [style]="{'min-width': '160px'}"
-      />
+      @if (!isRecent) {
+        <p-dropdown
+          [options]="sortOptions"
+          [(ngModel)]="sortValue"
+          (ngModelChange)="onSortChange()"
+          styleClass="sort-dropdown"
+          [style]="{'min-width': '160px'}"
+        />
+      }
 
       <div class="view-toggle">
         <button
@@ -80,6 +93,16 @@
         ></button>
       </div>
 
+      @if (showFolders && !isTrash) {
+        <button
+          pButton type="button"
+          label="Nueva carpeta"
+          icon="pi pi-folder-plus"
+          class="p-button-outlined new-folder-btn"
+          (click)="openNewFolder()"
+        ></button>
+      }
+
       <button
         pButton type="button"
         label="Subir"
@@ -92,9 +115,8 @@
 
   <!-- Grid view -->
   @if (viewMode() === 'grid') {
-    @if (fileService.loading() && !fileService.files().length) {
-      <!-- Initial skeleton loading -->
-      <div class="file-grid file-grid-skeleton">
+    @if (fileService.loading() && !fileService.files().length && !folderService.folders().length) {
+      <div class="file-grid">
         @for (s of skeletonItems; track $index) {
           <div class="skeleton-card">
             <p-skeleton height="140px" borderRadius="0.625rem 0.625rem 0 0" />
@@ -105,18 +127,34 @@
           </div>
         }
       </div>
-    } @else if (!fileService.files().length && !fileService.loading()) {
-      <!-- Empty state -->
-      <div class="empty-state-wrap">
-        <div class="empty-state">
-          <i class="pi pi-folder-open"></i>
-          <h3>Esta carpeta está vacía</h3>
-          <p>Arrastra archivos aquí o pulsa <strong>Subir</strong> para empezar.</p>
-          <button pButton label="Subir archivos" icon="pi pi-upload" (click)="openFileInput()"></button>
-        </div>
-      </div>
+    } @else if (!fileService.files().length && !folderService.folders().length && !fileService.loading()) {
+      @if (fileService.loadError()) {
+        <app-error-state (retry)="load()" />
+      } @else {
+        <app-empty-state
+          icon="pi-clock"
+          [title]="isRecent ? 'Sin archivos recientes' : 'Esta carpeta está vacía'"
+          [message]="isRecent ? 'Aquí aparecerán los archivos que hayas subido o modificado recientemente.' : 'Arrastra archivos aquí o pulsa Subir para empezar.'"
+          [actionLabel]="isRecent ? '' : 'Subir archivos'"
+          [actionIcon]="isRecent ? '' : 'pi pi-upload'"
+          (action)="openFileInput()"
+        />
+      }
     } @else {
       <div class="file-grid" (scroll)="onScroll($event)">
+        <!-- Folders first -->
+        @if (showFolders) {
+          @for (folder of folderService.folders(); track folder.id) {
+            <app-folder-card
+              [folder]="folder"
+              (open)="openFolder($event)"
+              (rename)="openFolderRename($event)"
+              (trash)="onFolderTrash($event)"
+              (fileDrop)="onFileDropToFolder(folder, $event)"
+            />
+          }
+        }
+        <!-- Then files -->
         @for (file of fileService.files(); track file.id) {
           <app-file-card
             [file]="file"
@@ -127,6 +165,7 @@
             (rename)="openRename($event)"
             (restore)="onRestore($event)"
             (deletePermanent)="onDeletePermanent($event)"
+            (move)="openMove($event)"
           />
         }
         @if (fileService.loading()) {
@@ -157,12 +196,18 @@
           </div>
         }
       } @else if (!fileService.files().length && !fileService.loading()) {
-        <div class="empty-state">
-          <i class="pi pi-folder-open"></i>
-          <h3>Esta carpeta está vacía</h3>
-          <p>Arrastra archivos aquí o pulsa <strong>Subir</strong> para empezar.</p>
-          <button pButton label="Subir archivos" icon="pi pi-upload" (click)="openFileInput()"></button>
-        </div>
+        @if (fileService.loadError()) {
+          <app-error-state (retry)="load()" />
+        } @else {
+          <app-empty-state
+            icon="pi-clock"
+            [title]="isRecent ? 'Sin archivos recientes' : 'Esta carpeta está vacía'"
+            [message]="isRecent ? 'Aquí aparecerán los archivos que hayas subido o modificado recientemente.' : 'Arrastra archivos aquí o pulsa Subir para empezar.'"
+            [actionLabel]="isRecent ? '' : 'Subir archivos'"
+            [actionIcon]="isRecent ? '' : 'pi pi-upload'"
+            (action)="openFileInput()"
+          />
+        }
       } @else {
         <div class="list-header">
           <span>Nombre</span>
@@ -191,6 +236,7 @@
             <div class="list-actions" (click)="$event.stopPropagation()">
               <button pButton type="button" icon="pi pi-download" class="p-button-text p-button-sm action-icon" (click)="onDownload(file)"></button>
               <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm action-icon" (click)="openRename(file)"></button>
+              <button pButton type="button" icon="pi pi-arrow-right-arrow-left" class="p-button-text p-button-sm action-icon" pTooltip="Mover" (click)="openMove(file)"></button>
               <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm action-icon danger" (click)="onTrash(file)"></button>
             </div>
           </div>
@@ -200,7 +246,7 @@
   }
 </div>
 
-<!-- Rename dialog -->
+<!-- File rename dialog -->
 <p-dialog
   header="Renombrar archivo"
   [(visible)]="renameDialogVisible"
@@ -218,5 +264,61 @@
   <ng-template pTemplate="footer">
     <button pButton label="Cancelar" class="p-button-text" (click)="renameDialogVisible = false"></button>
     <button pButton label="Guardar" icon="pi pi-check" (click)="confirmRename()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Folder create/rename dialog -->
+<p-dialog
+  [header]="folderDialogMode === 'create' ? 'Nueva carpeta' : 'Renombrar carpeta'"
+  [(visible)]="folderDialogVisible"
+  [modal]="true"
+  [style]="{width: '400px'}"
+  [draggable]="false"
+>
+  <input
+    pInputText
+    [(ngModel)]="folderDialogName"
+    class="w-full"
+    [placeholder]="folderDialogMode === 'create' ? 'Nombre de la carpeta' : ''"
+    (keyup.enter)="confirmFolderDialog()"
+    autofocus
+  />
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancelar" class="p-button-text" (click)="folderDialogVisible = false"></button>
+    <button
+      pButton
+      [label]="folderDialogMode === 'create' ? 'Crear' : 'Guardar'"
+      icon="pi pi-check"
+      (click)="confirmFolderDialog()"
+    ></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Move to folder dialog -->
+<p-dialog
+  header="Mover a carpeta"
+  [(visible)]="moveDialogVisible"
+  [modal]="true"
+  [style]="{width: '420px'}"
+  [draggable]="false"
+>
+  <div class="move-folder-list">
+    <button class="move-folder-item" (click)="confirmMove(null)">
+      <i class="pi pi-home"></i>
+      <span>Mi Drive (raíz)</span>
+    </button>
+    @for (f of moveFolders; track f.id) {
+      <button class="move-folder-item" (click)="confirmMove(f.id)">
+        <i class="pi pi-folder"></i>
+        <span>{{ f.name }}</span>
+        <span class="move-folder-count">{{ f.files_count }} archivos</span>
+      </button>
+    }
+    @if (!moveFolders.length) {
+      <p class="move-empty">No tienes carpetas creadas aún.</p>
+    }
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancelar" class="p-button-text" (click)="moveDialogVisible = false"></button>
   </ng-template>
 </p-dialog>

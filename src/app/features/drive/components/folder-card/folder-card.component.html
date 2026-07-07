@@ -1,0 +1,39 @@
+<div
+  class="folder-card"
+  [class.drag-over]="isDragOver"
+  (click)="open.emit(folder)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <div class="card-top">
+    <div class="folder-icon">
+      @if (folder.is_shared) {
+        <i class="pi pi-users"></i>
+      } @else {
+        <i class="pi pi-folder"></i>
+      }
+    </div>
+    <div class="card-actions">
+      <button
+        pButton type="button"
+        icon="pi pi-pencil"
+        class="p-button-rounded p-button-text action-btn"
+        pTooltip="Renombrar"
+        (click)="$event.stopPropagation(); rename.emit(folder)"
+      ></button>
+      <button
+        pButton type="button"
+        icon="pi pi-trash"
+        class="p-button-rounded p-button-text action-btn danger"
+        pTooltip="Eliminar carpeta"
+        (click)="$event.stopPropagation(); trash.emit(folder)"
+      ></button>
+    </div>
+  </div>
+
+  <div class="folder-info">
+    <p class="folder-name" [title]="folder.name">{{ folder.name }}</p>
+    <p class="folder-meta">{{ folder.files_count }} archivo{{ folder.files_count !== 1 ? 's' : '' }}</p>
+  </div>
+</div>

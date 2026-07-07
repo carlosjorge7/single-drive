@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  flex-wrap: wrap;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--hd-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--hd-text-secondary);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover:not(:disabled) {
+    background: var(--hd-hover);
+    color: var(--hd-text);
+  }
+
+  &.active, &:disabled {
+    color: var(--hd-text);
+    cursor: default;
+  }
+
+  i { font-size: 0.875rem; }
+}
+
+.crumb-root {
+  color: var(--hd-primary);
+  &:hover:not(:disabled) { color: var(--hd-primary); }
+}
+
+.sep {
+  font-size: 0.75rem;
+  color: var(--hd-text-muted);
+}

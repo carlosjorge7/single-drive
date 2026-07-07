@@ -133,3 +133,69 @@
   font-size: 0.75rem;
   color: var(--hd-text-muted);
 }
+
+/* ---- Folder tree ---- */
+.folder-tree-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.625rem;
+  border: none;
+  background: transparent;
+  color: var(--hd-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+
+  i { font-size: 0.875rem; color: var(--hd-text-muted); transition: color 0.12s; flex-shrink: 0; }
+
+  &:hover {
+    background: var(--hd-hover);
+    color: var(--hd-text);
+    i { color: var(--hd-primary); }
+  }
+
+  &.active {
+    background: var(--hd-primary-subtle);
+    color: var(--hd-primary);
+    font-weight: 600;
+    i { color: var(--hd-primary); }
+  }
+
+  &.child { padding-left: 1.75rem; }
+}
+
+.folder-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.expand-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--hd-text-muted);
+
+  i { font-size: 0.75rem; }
+}
+
+.folder-children {
+  display: flex;
+  flex-direction: column;
+}

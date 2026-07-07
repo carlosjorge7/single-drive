@@ -104,3 +104,46 @@
   font-size: 0.7rem;
   color: var(--hd-text-muted);
 }
+
+.select-check {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.file-card:hover .select-check,
+.file-card.selected .select-check {
+  opacity: 1;
+}
+
+.check-box {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+  cursor: pointer;
+
+  &.checked {
+    background: var(--primary-color, #6366f1);
+    border-color: var(--primary-color, #6366f1);
+
+    i {
+      color: #fff;
+      font-size: 0.625rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.file-card.selected {
+  outline: 2px solid var(--primary-color, #6366f1);
+  outline-offset: 2px;
+}

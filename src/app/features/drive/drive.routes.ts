@@ -43,4 +43,16 @@ export const driveRoutes: Routes = [
       import('./pages/files-explorer/files-explorer.component').then(m => m.FilesExplorerComponent),
     data: { trash: true, title: 'Papelera' },
   },
+  {
+    path: 'recent',
+    loadComponent: () =>
+      import('./pages/files-explorer/files-explorer.component').then(m => m.FilesExplorerComponent),
+    data: { title: 'Recientes', recent: true },
+  },
+  {
+    path: 'folder/:id',
+    loadComponent: () =>
+      import('./pages/files-explorer/files-explorer.component').then(m => m.FilesExplorerComponent),
+    data: { folderMode: true },
+  },
 ];

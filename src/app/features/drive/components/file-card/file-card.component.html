@@ -1,5 +1,20 @@
-<div class="file-card" [class.selected]="selected" (click)="preview.emit(file)">
+<div
+  class="file-card"
+  [class.selected]="selection.isSelected(file.id)"
+  [attr.draggable]="!trashMode ? 'true' : null"
+  (dragstart)="onDragStart($event)"
+  (click)="onCardClick()"
+>
   <div class="card-thumbnail">
+    @if (!trashMode) {
+      <div class="select-check" (click)="$event.stopPropagation(); selection.toggle(file.id)">
+        <div class="check-box" [class.checked]="selection.isSelected(file.id)">
+          @if (selection.isSelected(file.id)) {
+            <i class="pi pi-check"></i>
+          }
+        </div>
+      </div>
+    }
     @if (isProcessing) {
       <div class="processing-state">
         <i class="pi pi-spin pi-spinner"></i>
@@ -49,6 +64,13 @@
           class="p-button-rounded p-button-text overlay-btn"
           pTooltip="Renombrar"
           (click)="$event.stopPropagation(); rename.emit(file)"
+        ></button>
+        <button
+          pButton type="button"
+          icon="pi pi-arrow-right-arrow-left"
+          class="p-button-rounded p-button-text overlay-btn"
+          pTooltip="Mover a carpeta"
+          (click)="$event.stopPropagation(); move.emit(file)"
         ></button>
         <button
           pButton type="button"

@@ -10,6 +10,7 @@ import { FileTypeIconPipe } from '../../../../shared/pipes/file-type-icon.pipe';
 interface DriveStats {
   total_files: number;
   total_size: number;
+  quota_bytes?: number;
   by_type: Record<string, number>;
 }
 
@@ -31,7 +32,7 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fileService.stats().subscribe({ next: s => this.stats.set(s) });
+    this.fileService.loadStats().subscribe({ next: (s) => this.stats.set(s) });
     this.fileService.list({ ordering: '-created_at' }).subscribe({
       next: () => {
         this.recentFiles.set(this.fileService.files().slice(0, 8));
@@ -54,7 +55,7 @@ export class DashboardComponent implements OnInit {
   get storagePercent(): number {
     const s = this.stats();
     if (!s || s.total_size === 0) return 0;
-    const MAX = 10 * 1024 * 1024 * 1024;
-    return Math.min(Math.round((s.total_size / MAX) * 100), 100);
+    const max = s.quota_bytes ?? 100 * 1024 * 1024 * 1024;
+    return Math.min(Math.round((s.total_size / max) * 100), 100);
   }
 }

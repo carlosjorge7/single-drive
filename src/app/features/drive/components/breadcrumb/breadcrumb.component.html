@@ -1,0 +1,15 @@
+<nav class="breadcrumb">
+  <button class="crumb crumb-root" (click)="navigate.emit({ id: null, name: 'Mi Drive' })">
+    <i class="pi pi-home"></i>
+    <span>Mi Drive</span>
+  </button>
+  @for (item of items; track item.id; let last = $last) {
+    <i class="pi pi-angle-right sep"></i>
+    <button
+      class="crumb"
+      [class.active]="last"
+      [disabled]="last"
+      (click)="!last && navigate.emit(item)"
+    >{{ item.name }}</button>
+  }
+</nav>
